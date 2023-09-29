@@ -1,7 +1,7 @@
 class SQL_configs:
     def __init__(self) -> None:
-        self.host = 'YOUR HOST NAME'
-        self.user = 'YOUR USER NAME'
-        self.passwd = 'YOUR PASSWORD'
-        self.database = 'YOUR DATABASE'
+        self.host = 'localhost'
+        self.user = 'root'
+        self.passwd = 'chipsSQL@1'
+        self.database = 'XGB_project'
         self.auth_plugin = 'mysql_native_password'
