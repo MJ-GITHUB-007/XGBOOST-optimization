@@ -161,3 +161,4 @@ cython_debug/
 
 # My stuff
 data_xgb.csv
+configs.py
