@@ -11,9 +11,10 @@ import pretty_errors
 # Importing and setting configurations
 from congigs import SQL_configs
 configs = SQL_configs()
+curr_path = os.getcwd()
 
 # csv file name
-filename = os.path.normpath('/home/mohammed/Desktop/Shivan/data_xgb.csv')
+filename = os.path.join(curr_path, '../data_xgb.csv')
 
 # initializing the titles list
 fields = []
