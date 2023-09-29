@@ -9,7 +9,7 @@ warnings.filterwarnings(action='ignore')
 import pretty_errors
 
 # Importing and setting configurations
-from congigs import SQL_configs
+from xgb_code.configs import SQL_configs
 configs = SQL_configs()
 curr_path = os.getcwd()
 
