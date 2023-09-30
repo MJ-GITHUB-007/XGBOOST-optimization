@@ -161,3 +161,4 @@ cython_debug/
 
 # My stuff
 data_xgb.csv
+models/cc_fraud_detector.pkl

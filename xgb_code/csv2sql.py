@@ -9,81 +9,18 @@ warnings.filterwarnings(action='ignore')
 import pretty_errors
 
 # Importing and setting configurations
-from xgb_code.configs import SQL_configs
+from SQL import SQL_configs, SQL_queries
 configs = SQL_configs()
+queries = SQL_queries()
 curr_path = os.getcwd()
 
 # csv file name
-filename = os.path.join(curr_path, '../data_xgb.csv')
+filename = os.path.join(curr_path, 'data_xgb.csv')
 
 # initializing the titles list
 fields = []
 data = []
 limit = 0
-
-connection =  mysql.connector.connect(
-        host=configs.host,
-        user=configs.user,
-        password=configs.passwd,
-        database=configs.database,
-        auth_plugin=configs.auth_plugin
-    )
-try:
-    initial_query = """
-    DROP TABLE credit_card_fraud;
-    """
-    # Drop the table
-    cursor = connection.cursor()
-    cursor.execute(initial_query)
-    cursor.close()
-    print('Dropped existing table credit_card_fraud')
-except:
-    print('No existing table found')
-
-initial_query = """
-CREATE TABLE credit_card_fraud(
-ID MEDIUMINT,
-V1 DECIMAL(24, 20),
-V2 DECIMAL(24, 20),
-V3 DECIMAL(24, 20),
-V4 DECIMAL(24, 20),
-V5 DECIMAL(24, 20),
-V6 DECIMAL(24, 20),
-V7 DECIMAL(24, 20),
-V8 DECIMAL(24, 20),
-V9 DECIMAL(24, 20),
-V10 DECIMAL(24, 20),
-V11 DECIMAL(24, 20),
-V12 DECIMAL(24, 20),
-V13 DECIMAL(24, 20),
-V14 DECIMAL(24, 20),
-V15 DECIMAL(24, 20),
-V16 DECIMAL(24, 20),
-V17 DECIMAL(24, 20),
-V18 DECIMAL(24, 20),
-V19 DECIMAL(24, 20),
-V20 DECIMAL(24, 20),
-V21 DECIMAL(24, 20),
-V22 DECIMAL(24, 20),
-V23 DECIMAL(24, 20),
-V24 DECIMAL(24, 20),
-V25 DECIMAL(24, 20),
-V26 DECIMAL(24, 20),
-V27 DECIMAL(24, 20),
-V28 DECIMAL(24, 20),
-Amount DECIMAL(10, 2),
-Class TINYINT,
-PRIMARY KEY (ID)
-);
-"""
-# Initialize the table
-time.sleep(2)
-cursor = connection.cursor()
-cursor.execute(initial_query)
-cursor.close()
-connection.close()
-print('Created table credit_card_fraud')
-time.sleep(2)
 
 with mysql.connector.connect(
         host=configs.host,
@@ -91,6 +28,28 @@ with mysql.connector.connect(
         password=configs.passwd,
         database=configs.database,
         auth_plugin=configs.auth_plugin
+) as connection:
+    try:
+        # Drop the table
+        with connection.cursor() as cursor:
+            cursor.execute(queries.drop_query)
+            print(f'Dropped existing table {configs.table}')
+    except:
+        print('No existing table found')
+
+    # Initialize the table
+    time.sleep(2)
+    with connection.cursor() as cursor:
+        cursor.execute(queries.initial_query)
+print(f'Created table {configs.table}')
+time.sleep(2)
+
+with mysql.connector.connect(
+    host=configs.host,
+    user=configs.user,
+    password=configs.passwd,
+    database=configs.database,
+    auth_plugin=configs.auth_plugin
 ) as connection:
     
     with connection.cursor() as cursor:
@@ -145,9 +104,8 @@ with mysql.connector.connect(
                 )
                 data.append(data_to_insert)
                 if len(data) >= 20000 or i >= limit-1:
-                    insert_query = "INSERT INTO credit_card_fraud (ID, V1, V2, V3, V4, V5, V6, V7, V8, V9, V10, V11, V12, V13, V14, V15, V16, V17, V18, V19, V20, V21, V22, V23, V24, V25, V26, V27, V28, Amount, Class) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
                     # Insert data into the table
-                    cursor.executemany(insert_query, data)
+                    cursor.executemany(queries.insert_query, data)
                     print(f'{i+1} record(s) inserted')
                     # Commit the changes to the database
                     connection.commit()
