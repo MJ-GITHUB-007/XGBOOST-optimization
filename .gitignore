@@ -160,5 +160,5 @@ cython_debug/
 #.idea/
 
 # My stuff
-data_xgb.csv
-models/cc_fraud_detector.pkl
+csv_data.csv
+outputs/xgb_models/tree_model.png
